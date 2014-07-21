@@ -26,15 +26,30 @@ PreloaderState.prototype = {
 
         this.load.text('GameConstant', './res/game_constant.json');
 
+        this.game.load.image('desert', './res/desert.png');
+        this.game.load.image('start', './res/start.png');
+
+
+        //SOUNDS
+        this.game.load.audio('tension1', ['./res/sound/tension1.mp3']);
+        this.game.load.audio('party1', ['./res/sound/party1.mp3']);
+        this.game.load.audio('shoot1', ['./res/sound/shoot1.mp3']);
+        this.game.load.audio('weaponoverheat', ['./res/sound/weaponoverheat.mp3']);
+        this.game.load.audio('footstep1', ['./res/sound/footstep1.mp3']);
+        
+
+        this.game.load.atlas('entities', './res/entities.png'
+            , './res/entities.txt');
+
         this.load.onFileComplete.add(this.onFileLoaded, this);
 
         console.log(this.load.progress);
     },
 
     create: function() {
-        //$('.loading-container').remove();
+        $('.loading-container').remove();
 
-        //this.game.state.start('MainMenuState');
+        this.game.state.start('MainMenuState');
     },
 
     destroy: function() {

@@ -1,14 +1,14 @@
 {
   "name": "phaser-boilerplate",
   "version": "0.0.0",
-  "description": "A phaser.js game boilerplate for easy deploy and development.",
+  "description": "Quadramma Phaser boilerplate",
   "keywords": [
     "HTML5",
     "game",
     "boilerplate",
     "phaser"
   ],
-  "author": "Luiz F. A. de Pra",
+  "author": "Javi Moschitta",
   "homepage": "https://github.com/RawArkanis/phaser-boilerplate",
   "license": "MIT",
   "bugs": {
