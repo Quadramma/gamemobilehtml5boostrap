@@ -24,42 +24,40 @@ PlayState.prototype = {
 		}, 5000);
 
 		// create player and configure
-		this.player = this.game.add.sprite(this.game.stage.width / 3, 200, "entities");
-		this.player.animations.add('idle', ['player-idle-1.png'], 10, false, false);
-		this.player.animations.add('fire', ['player-fire-1-00.png', 'player-fire-1-01.png', 'player-fire-1-02.png'], 10, true, false);
-		this.player.animations.add('walk', ['player-walk-1-00.png', 'player-walk-1-01.png', 'player-walk-1-02.png', 'player-walk-1-03.png', 'player-walk-1-04.png', 'player-walk-1-05.png', 'player-walk-1-06.png', 'player-walk-1-07.png'], 10, true, false);
-		this.player.animations.play('idle')
-		this.player.anchor.setTo(.5, .5);
-		this.player.body.enable = true;
-		this.player.flipped = false;
+		state.player = state.game.add.sprite(state.game.stage.width / 3, 200, "entities");
+		state.player.animations.add('idle', ['player-idle-1.png'], 10, false, false);
+		state.player.animations.add('fire', ['player-fire-1-00.png', 'player-fire-1-01.png', 'player-fire-1-02.png'], 10, true, false);
+		state.player.animations.add('walk', ['player-walk-1-00.png', 'player-walk-1-01.png', 'player-walk-1-02.png', 'player-walk-1-03.png', 'player-walk-1-04.png', 'player-walk-1-05.png', 'player-walk-1-06.png', 'player-walk-1-07.png'], 10, true, false);
+		state.player.animations.play('idle')
+		state.player.anchor.setTo(.5, .5);
+		state.player.body.enable = true;
+		state.player.flipped = false;
 
 
-		this.player.weaponshoot = new state.game.Phaser.Sound(state.game, 'shoot1', 1, false);
-		this.player.weaponoverheat = new state.game.Phaser.Sound(state.game, 'weaponoverheat', 1, false);
-		this.player.footstep = new state.game.Phaser.Sound(state.game, 'footstep1', 1, false);
+		state.player.weaponshoot = new state.game.Phaser.Sound(state.game, 'shoot1', 1, false);
+		state.player.weaponoverheat = new state.game.Phaser.Sound(state.game, 'weaponoverheat', 1, false);
+		state.player.footstep = new state.game.Phaser.Sound(state.game, 'footstep1', 1, false);
 
-		this.player.walking = function() {
+		state.player.walking = function() {
 			state.player.footstep.play('', 0, 1, true, false);
 			state.player.footstep.totalDuration = 0.2;
 			state.player.footstep.durationMS = 200;
 		}
-		this.player.idle = function() {
+		state.player.idle = function() {
 			state.player.footstep.stop();
-			this.player.body.velocity.x = 0;
+			state.player.body.velocity.x = 0;
 		}
 
 		state.player.y = state.game.stage.bounds.height - 90;
 
 
 
-		
-
 		//weapons
-		this.weaponId = 1;
-		this.fire = false;
-		this.bulletGroup = this.game.add.group(null, 'bullets', false, true, 0);
-		this.shotDelayTime = 0;
-		this.shotDelay = 400;
+		state.weaponId = 1;
+		state.fire = false;
+		state.bulletGroup = state.game.add.group(null, 'bullets', false, true, 0);
+		state.shotDelayTime = 0;
+		state.shotDelay = 400;
 
 		state.createBullet = function(state) {
 			var bullet = state.bulletGroup.getFirstDead() || state.game.add.sprite('')
@@ -71,13 +69,13 @@ PlayState.prototype = {
 			bullet.body.velocity.x = bullet.flipped ? -600 : 600;
 			bullet.loadTexture("entities", "bullet-gun.png");
 
-			this.player.weaponshoot.play('', 0, 1, false, true);
+			state.player.weaponshoot.play('', 0, 1, false, true);
 
 
 			console.info('bullet created');
 		}
 
-		this.keyboard = this.game.input.keyboard;
+		state.keyboard = state.game.input.keyboard;
 		state.controls = {
 			justReleasedRight: function() {
 				return state.keyboard.justReleased(state.game.Phaser.Keyboard.RIGHT) ||
@@ -89,13 +87,13 @@ PlayState.prototype = {
 					state.keyboard.isDown(state.game.Phaser.Keyboard.D)
 			},
 			justReleasedLeft: function() {
-				return state.keyboard.justReleased(state.game.Phaser.Keyboard.RIGHT) ||
-					state.keyboard.justReleased(state.game.Phaser.Keyboard.D);
+				return state.keyboard.justReleased(state.game.Phaser.Keyboard.LEFT) ||
+					state.keyboard.justReleased(state.game.Phaser.Keyboard.A);
 
 			},
 			isDownLeft: function() {
-				return state.keyboard.isDown(state.game.Phaser.Keyboard.RIGHT) ||
-					state.keyboard.isDown(state.game.Phaser.Keyboard.D)
+				return state.keyboard.isDown(state.game.Phaser.Keyboard.LEFT) ||
+					state.keyboard.isDown(state.game.Phaser.Keyboard.A)
 			}
 		};
 
@@ -125,17 +123,17 @@ PlayState.prototype = {
 
 
 		// Player controls
-		if (state.justReleasedRight() || state.justReleasedLeft()) {
+		if (state.controls.justReleasedRight() || state.controls.justReleasedLeft()) {
 			state.player.idle();
 		} else {
 
-			if (state.isDownRight()) {
+			if (state.controls.isDownRight()) {
 				state.player.body.velocity.x = 50;
 				state.player.scale.x = 1;
 				state.player.flipped = false;
 				state.player.walking();
 			}
-			if (state.isDownLeft()) {
+			if (state.controls.isDownLeft()) {
 				state.player.body.velocity.x = -50;
 				state.player.scale.x = -1;
 				state.player.flipped = true;
