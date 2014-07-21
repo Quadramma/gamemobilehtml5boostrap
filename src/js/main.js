@@ -1,8 +1,9 @@
 'use strict';
 
+
 // Load modules
 var Constant = require('./constant');
-var Phaser = require('./lib/phaser');
+//var Phaser = require('./lib/phaser.min');
 var PreloaderState = require('./state/preloader_state');
 var MainMenuState = require('./state/main_menu_state');
 var PlayState = require('./state/play_state');
@@ -22,6 +23,8 @@ function init() {
     var mainmenu = new MainMenuState(game);
     var playstate = new PlayState(game);
 
+    console.info(game);
+    console.info(game.state);
 
     game.state.add('PreloaderState', preloader);
     game.state.add('MainMenuState', mainmenu);

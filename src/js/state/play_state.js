@@ -30,7 +30,8 @@ PlayState.prototype = {
 		state.player.animations.add('walk', ['player-walk-1-00.png', 'player-walk-1-01.png', 'player-walk-1-02.png', 'player-walk-1-03.png', 'player-walk-1-04.png', 'player-walk-1-05.png', 'player-walk-1-06.png', 'player-walk-1-07.png'], 10, true, false);
 		state.player.animations.play('idle')
 		state.player.anchor.setTo(.5, .5);
-		state.player.body.enable = true;
+		state.game.physics.arcade.enable(state.player, true);
+		//state.player.body.enable = true;
 		state.player.flipped = false;
 
 
@@ -55,25 +56,63 @@ PlayState.prototype = {
 		//weapons
 		state.weaponId = 1;
 		state.fire = false;
-		state.bulletGroup = state.game.add.group(null, 'bullets', false, true, 0);
+		state.bulletGroup = state.game.add.group(null, 'bullets', true, true, Phaser.Physics.ARCADE);
 		state.shotDelayTime = 0;
 		state.shotDelay = 400;
 
 		state.createBullet = function(state) {
 			var bullet = state.bulletGroup.getFirstDead() || state.game.add.sprite('')
+
+			
+
+			state.game.physics.arcade.enable(bullet, true);
 			bullet.body.enable = true;
 			bullet.exists = true;
 			bullet.x = state.player.x + (state.player.flipped ? state.player.width * .5 : state.player.width * .5);
 			bullet.y = state.player.y - 13;
 			bullet.flipped = state.player.flipped;
 			bullet.body.velocity.x = bullet.flipped ? -600 : 600;
-			bullet.loadTexture("entities", "bullet-gun.png");
-
-			state.player.weaponshoot.play('', 0, 1, false, true);
+			state.bulletGroup.add(bullet);
+bullet.loadTexture("entities", "bullet-gun.png");
+			state.player.weaponshoot.play('', 0, 0.2, false, true);
 
 
 			console.info('bullet created');
 		}
+
+
+
+		//ZOMBIES
+		//zombies
+		state.zombieGroup = state.game.add.group(null, 'zombies', true, true, Phaser.Physics.ARCADE);
+		state.zombieSpawnDelay = 1000;
+		state.zombieSpawnDelayTime = 0;
+		state.createZombie = function() {
+			var zombie = state.zombieGroup.getFirstDead() || state.game.add.sprite('');
+
+			
+
+			state.game.physics.arcade.enable(zombie, true);
+			zombie.body.enable = true;
+			
+			zombie.exists = true;
+			zombie.x = Math.random() < 0.5 ? state.game.stage.width + 30 : -30;
+			zombie.y = state.player.y - 40;
+			zombie.flipped = zombie.x > 0 ? true : false;
+			zombie.body.velocity.x = zombie.flipped ? -10 : 10;
+			state.zombieGroup.add(zombie);
+
+			//tex
+			zombie.loadTexture("entities");
+			var style = Math.random() < 0.5 ? 0 : 1;
+			zombie.animations.frameName = "zombie-a-" + style + "-00.png";
+			zombie.animations.add('walk', ['zombie-a-' + style + '-00.png', 'zombie-a-' + style + '-01.png', 'zombie-a-' + style + '-02.png', 'zombie-a-' + style + '-03.png', 'zombie-a-' + style + '-04.png', 'zombie-a-' + style + '-05.png'], 10, true, false);
+			zombie.animations.play("walk");
+
+			console.info('zombie created');
+		};
+
+
 
 		state.keyboard = state.game.input.keyboard;
 		state.controls = {
@@ -102,6 +141,26 @@ PlayState.prototype = {
 	},
 	update: function() {
 		var state = this;
+
+
+		//SPAWN ZOMBIES
+		state.zombieSpawnDelayTime += state.game.time.elapsed;
+		if (state.zombieSpawnDelayTime > state.zombieSpawnDelay) {
+			state.createZombie();
+			state.zombieSpawnDelayTime = 0;
+		}
+
+		//OVERLAP ZOMBIES BULLETS
+		//console.info(state.game.state.game.Phaser.Physics.Arcade);
+		//console.info(state.game.state.game.Phaser.Physics.Arcade.collide);
+		state.game.physics.arcade.collide(state.zombieGroup, state.bulletGroup,
+			function(spriteA, spriteB) {
+				console.info('collidecollidecollidecollidecollide');
+				spriteA.exists = false;
+				spriteB.exists = false;
+			});
+
+		
 		//FIRING
 		if (state.keyboard.justPressed(this.game.Phaser.Keyboard.SPACEBAR)) {
 			// increase the shotDelayTime based on the game's time delta

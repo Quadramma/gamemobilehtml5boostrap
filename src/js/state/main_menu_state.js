@@ -16,7 +16,7 @@ MainMenuState.prototype = {
 		state.scene = {
 			music: new state.game.Phaser.Sound(state.game, 'party1', 1, false),
 			musicPlay: function() {
-				state.scene.music.play('', 0, 0.5, true, false);
+				//state.scene.music.play('', 0, 0.5, true, false);
 			}
 		};
 		setTimeout(function() {
@@ -24,12 +24,13 @@ MainMenuState.prototype = {
 		}, 5000);
 
 		state.startbutton = state.game.add.sprite(100, 100, 'start');
-		state.startbutton.input.start(); // start the inputHandler of the sprite
+		//state.startbutton.input.start(); // start the inputHandler of the sprite
 	},
 	update: function() {
 		var state = this;
 
-		if (state.startbutton.input.pointerDown(state.game.input.activePointer.id)) {
+		//if (state.game.Phaser.Physics.P2.hitTest(state.startbutton, state.game.input.activePointer.id)) {
+		if (state.game.input.keyboard.justPressed(this.game.Phaser.Keyboard.SPACEBAR)) {
 			state.game.state.start('PlayState');
 		} else {
 
@@ -39,7 +40,8 @@ MainMenuState.prototype = {
 	},
 	shutdown: function() {
 		var state = this;
-		state.scene.music.stop();
+		//state.scene.music.stop();
+		console.info('shutdown');
 	}
 };
 

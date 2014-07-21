@@ -47,9 +47,12 @@ PreloaderState.prototype = {
     },
 
     create: function() {
+        var state = this;
         $('.loading-container').remove();
 
-        this.game.state.start('MainMenuState');
+        
+
+        state.game.state.start('MainMenuState');
     },
 
     destroy: function() {
